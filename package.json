@@ -1,0 +1,27 @@
+{
+  "name": "matematika-ajaib",
+  "version": "1.0.0",
+  "description": "Game edukasi matematika untuk anak SD kelas 1-6 (HTML + JS + SQLite, tanpa dependensi npm)",
+  "private": true,
+  "license": "MIT",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/run-all.js",
+    "test:topics": "node test/topics.test.js 300",
+    "test:db": "node test/db.test.js",
+    "test:server": "node test/server.test.js",
+    "test:smoke": "node test/smoke.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "education",
+    "math",
+    "game",
+    "sqlite",
+    "offline",
+    "indonesia"
+  ]
+}

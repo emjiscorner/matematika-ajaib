@@ -1,0 +1,19 @@
+# Database & cache server (dibuat ulang otomatis)
+data/
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+*.bin
+
+# Berkas cadangan macOS / AppleDouble
+.DS_Store
+._*
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Berkas sementara uji
+*.tmp
+coverage/

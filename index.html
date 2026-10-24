@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#5B4BE8">
+<meta name="description" content="Matematika Ajaib - game edukasi matematika untuk anak TK dan sekolah dasar kelas 1 sampai kelas 6. 28 level (8 TK + 20 SD), soal pilihan ganda, ilustrasi, dan lencana.">
+<title>Matematika Ajaib — Game Edukasi Matematika TK &amp; SD</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%235B4BE8'/%3E%3Ctext x='50' y='72' font-size='62' text-anchor='middle' fill='%23fff' font-family='sans-serif' font-weight='bold'%3E%3F%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- ================= LAYER LATAR (dekorasi) ================= -->
+<div class="sky" aria-hidden="true">
+  <div class="sun"></div>
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+  <div class="hill hill-back"></div>
+  <div class="hill hill-front"></div>
+</div>
+
+<canvas id="fx-canvas" class="fx-canvas" aria-hidden="true"></canvas>
+
+<!-- ================= APLIKASI ================= -->
+<div id="app" class="app">
+
+  <!-- ---------- HEADER ---------- -->
+  <header class="topbar" id="topbar">
+    <button class="topbar-btn ghost" id="btn-home" title="Ke beranda">
+      <span class="ico">🏠</span>
+    </button>
+    <div class="topbar-title">
+      <strong>Matematika Ajaib</strong>
+      <span id="topbar-sub">Pilih level untuk mulai</span>
+    </div>
+    <div class="topbar-right">
+      <button class="chip chip-player" id="chip-player" title="Ganti pemain">
+        <span class="chip-avatar" id="chip-avatar">🙂</span>
+        <span class="chip-name" id="chip-name">Pemain</span>
+      </button>
+      <button class="topbar-btn" id="btn-sound" title="Suara"><span class="ico">🔊</span></button>
+      <button class="topbar-btn" id="btn-settings" title="Pengaturan"><span class="ico">⚙️</span></button>
+    </div>
+  </header>
+
+  <!-- ================= SCREEN: BERANDA ================= -->
+  <section class="screen is-active" id="screen-home">
+    <div class="home-wrap">
+      <div class="mascot-stage">
+        <div class="mascot-bubble" id="mascot-bubble">Halo! Aku <b>Bobi</b>. Ayo belajar matematika bersama! 🎉</div>
+        <div class="mascot" id="mascot-home"></div>
+      </div>
+
+      <h1 class="home-title">Matematika <span>Ajaib</span></h1>
+      <p class="home-sub">8 level TK · 20 level SD · Cocok usia 4–12 tahun</p>
+
+      <div class="home-stats">
+        <div class="stat-card"><span class="stat-ico">⭐</span><b id="home-stars">0</b><small>Bintang</small></div>
+        <div class="stat-card"><span class="stat-ico">🏅</span><b id="home-badges">0</b><small>Lencana</small></div>
+        <div class="stat-card"><span class="stat-ico">✅</span><b id="home-done">0/20</b><small>Level Selesai</small></div>
+        <div class="stat-card"><span class="stat-ico">🎯</span><b id="home-acc">0%</b><small>Rata-rata Benar</small></div>
+      </div>
+
+      <div class="home-actions">
+        <button class="btn btn-primary btn-xl" id="btn-play">▶️ Mulai Belajar</button>
+        <button class="btn btn-primary btn-tk" id="btn-play-tk">🧸 Mulai TK</button>
+        <button class="btn btn-ghost" id="btn-levels">🗺️ Pilih Level</button>
+        <button class="btn btn-ghost" id="btn-stats">📊 Statistik</button>
+        <button class="btn btn-ghost" id="btn-leaderboard">🏆 Papan Peringkat</button>
+        <button class="btn btn-ghost" id="btn-help">❓ Cara Bermain</button>
+      </div>
+      <p class="home-switch">
+        Bukan <span id="switch-name">kamu</span>?
+        <button class="link-btn" id="btn-switch-player">👥 Ganti Pemain</button>
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= SCREEN: PILIH PEMAIN ================= -->
+  <section class="screen" id="screen-players">
+    <div class="page">
+      <div class="page-head">
+        <h2>👥 Pilih Pemain</h2>
+        <p>Satu perangkat bisa dipakai banyak anak. Tiap pemain punya progresnya sendiri.</p>
+      </div>
+
+      <div class="player-grid" id="player-grid"></div>
+
+      <button class="btn btn-primary btn-lg btn-block" id="btn-add-player">➕ Tambah Pemain Baru</button>
+
+      <div class="card" id="card-new-player" hidden>
+        <h3>🆕 Pemain Baru</h3>
+        <div class="field">
+          <label for="inp-pname">Nama</label>
+          <input type="text" id="inp-pname" maxlength="16" placeholder="Nama anak" autocomplete="off">
+        </div>
+        <div class="field">
+          <label>Kelas</label>
+          <div class="grade-picker" id="grade-picker"></div>
+        </div>
+        <div class="field">
+          <label>Avatar</label>
+          <div class="avatar-picker" id="new-avatar-picker"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" id="btn-cancel-player">Batal</button>
+          <button class="btn btn-primary" id="btn-save-player">✅ Simpan &amp; Main</button>
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn-ghost" id="btn-players-close">← Kembali ke Beranda</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SCREEN: PAPAN PERINGKAT ================= -->
+  <section class="screen" id="screen-leaderboard">
+    <div class="page">
+      <div class="page-head">
+        <h2>🏆 Papan Peringkat</h2>
+        <p id="lb-sub">Siapa yang paling Nilainya?</p>
+      </div>
+
+      <div class="seg seg-wide" id="lb-tabs">
+        <button data-tab="local" class="on">📱 Perangkat Ini</button>
+        <button data-tab="online">🌐 Semua Pemain</button>
+      </div>
+
+      <div class="lb-podium" id="lb-podium"></div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table class="tbl tbl-lb">
+            <thead><tr><th>#</th><th>Pemain</th><th>⭐</th><th>✅</th><th>🎯</th><th>Poin</th></tr></thead>
+            <tbody id="lb-tbody"></tbody>
+          </table>
+        </div>
+        <p class="hint-text" id="lb-note"></p>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn-primary" id="btn-lb-close">← Kembali</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SCREEN: PILIH LEVEL ================= -->
+  <section class="screen" id="screen-levels">
+    <div class="page">
+      <div class="page-head">
+        <h2>🗺️ Peta Level</h2>
+        <p>Selesaikan level untuk membuka level berikutnya. Kumpulkan bintang sebanyak-banyaknya!</p>
+      </div>
+      <div class="seg seg-wide" id="track-tabs">
+        <button data-track="sd" class="on">🎒 SD (Kelas 1–6)</button>
+        <button data-track="tk">🧸 TK (4–6 tahun)</button>
+      </div>
+      <div class="level-progress-wrap">
+        <div class="progressbar"><div class="progressbar-fill" id="levels-progress"></div></div>
+        <span id="levels-progress-text">0 dari 20 level selesai</span>
+      </div>
+      <div class="level-grid" id="level-grid"></div>
+    </div>
+  </section>
+
+  <!-- ================= SCREEN: MAIN ================= -->
+  <section class="screen screen-play" id="screen-play">
+    <div class="play-top">
+      <div class="play-top-row">
+        <button class="topbar-btn ghost" id="btn-quit" title="Keluar dari level">✕</button>
+        <div class="play-level-name" id="play-level-name">Level 1</div>
+        <div class="play-score"><span>⭐</span><b id="play-score">0</b></div>
+      </div>
+      <div class="play-top-row">
+        <div class="progressbar progressbar-lg"><div class="progressbar-fill" id="play-progress"></div></div>
+        <span class="play-qnum" id="play-qnum">1/10</span>
+      </div>
+      <div class="timer" id="timer">
+        <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
+        <span class="timer-label" id="timer-label">20s</span>
+      </div>
+      <div class="hearts" id="hearts"></div>
+    </div>
+
+    <div class="play-main">
+      <div class="q-card" id="q-card">
+        <div class="q-art" id="q-art"></div>
+        <div class="q-text" id="q-text">Memuat soal…</div>
+        <div class="q-topic" id="q-topic"></div>
+      </div>
+
+      <div class="options" id="options"></div>
+
+      <div class="play-foot">
+        <button class="btn btn-soft" id="btn-hint">💡 Petunjuk</button>
+        <button class="btn btn-soft" id="btn-skip">⏭️ Lewati</button>
+      </div>
+    </div>
+
+    <!-- Overlay umpan balik -->
+    <div class="feedback" id="feedback">
+      <div class="feedback-box" id="feedback-box">
+        <div class="feedback-emoji" id="feedback-emoji">🎉</div>
+        <div class="feedback-title" id="feedback-title">Benar!</div>
+        <div class="feedback-sub" id="feedback-sub"></div>
+        <button class="btn btn-primary btn-lg" id="btn-next">Lanjut ➜</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SCREEN: HASIL ================= -->
+  <section class="screen" id="screen-result">
+    <div class="page result-page">
+      <div class="result-card">
+        <div class="result-confetti" id="result-confetti"></div>
+        <div class="result-mascot" id="result-mascot"></div>
+        <div class="result-stars" id="result-stars"></div>
+        <h2 id="result-title">Level Selesai!</h2>
+        <p id="result-sub">Kamu hebat!</p>
+
+        <div class="result-grid">
+          <div class="result-box"><span>✅</span><b id="result-correct">0/10</b><small>Benar</small></div>
+          <div class="result-box"><span>🎯</span><b id="result-acc">0%</b><small>Ketelitian</small></div>
+          <div class="result-box"><span>⏱️</span><b id="result-time">0s</b><small>Waktu</small></div>
+          <div class="result-box"><span>⭐</span><b id="result-score">0</b><small>Poin</small></div>
+        </div>
+
+        <div class="result-best" id="result-best"></div>
+        <div class="result-badges" id="result-badges"></div>
+
+        <div class="result-actions">
+          <button class="btn btn-primary" id="btn-retry">🔁 Ulangi</button>
+          <button class="btn btn-ghost" id="btn-nextlevel">➡️ Level Berikutnya</button>
+          <button class="btn btn-ghost" id="btn-tomap">🗺️ Peta Level</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SCREEN: PENGATURAN ================= -->
+  <section class="screen" id="screen-settings">
+    <div class="page narrow">
+      <div class="page-head"><h2>⚙️ Pengaturan</h2><p>Atur game sesuai kebutuhanmu.</p></div>
+
+      <div class="card">
+        <h3>👤 Pemain</h3>
+        <div class="field">
+          <label for="inp-name">Nama pemain</label>
+          <input type="text" id="inp-name" maxlength="16" placeholder="Nama kamu">
+        </div>
+        <div class="field">
+          <label>Kelas</label>
+          <div class="grade-picker" id="grade-picker-settings"></div>
+        </div>
+        <div class="field">
+          <label>Avatar</label>
+          <div class="avatar-picker" id="avatar-picker"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-soft" id="btn-manage-players">👥 Ganti / Tambah Pemain</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>⏱️ Waktu per soal</h3>
+        <div class="field">
+          <label for="inp-time">Waktu: <b id="time-val">20 detik</b></label>
+          <input type="range" id="inp-time" min="5" max="180" step="5" value="20">
+          <div class="range-scale"><span>5s (sulit)</span><span>180s (santai)</span></div>
+        </div>
+        <label class="switch"><input type="checkbox" id="inp-time-unlimited"><span class="slider"></span><span class="switch-label">∞ Tanpa batas waktu</span></label>
+        <p class="hint-text">Jawaban yang benar sebelum waktu habis mendapat bonus poin. Kalau waktu habis, tidak ada bonus. Saat <b>Tanpa batas</b> aktif, tidak ada hitung mundur dan bonus waktu dimatikan (poin tetap dari jawaban benar).</p>
+      </div>
+
+      <div class="card">
+        <h3>🔊 Suara &amp; Musik</h3>
+        <label class="switch"><input type="checkbox" id="inp-sfx" checked><span class="slider"></span><span class="switch-label">Efek suara</span></label>
+        <label class="switch"><input type="checkbox" id="inp-music" checked><span class="slider"></span><span class="switch-label">Musik latar</span></label>
+      </div>
+
+      <div class="card">
+        <h3>🧠 Kesulitan</h3>
+        <div class="seg" id="seg-difficulty">
+          <button data-diff="santai">Santai</button>
+          <button data-diff="sedang" class="on">Sedang</button>
+          <button data-diff="sulit">Sulit</button>
+        </div>
+        <p class="hint-text">Menentukan berapa bonus waktu yang kamu dapat untuk menjawab benar.</p>
+      </div>
+
+      <div class="card">
+        <h3>💾 Data</h3>
+        <p class="hint-text">Progresmu disimpan otomatis di perangkat ini (database SQLite).
+        Tiap pemain punya salinan sendiri, jadi menghapus satu tidak merusak yang lain.</p>
+        <div class="btn-row">
+          <button class="btn btn-soft" id="btn-export">⬇️ Ekspor Progres</button>
+          <button class="btn btn-soft" id="btn-import">⬆️ Impor Progres</button>
+          <button class="btn btn-danger" id="btn-reset">🗑️ Hapus Progres Pemain Ini</button>
+          <button class="btn btn-danger" id="btn-reset-all">💣 Hapus Semua Pemain</button>
+        </div>
+        <input type="file" id="file-import" accept="application/json" hidden>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn-primary" id="btn-settings-close">✅ Simpan &amp; Kembali</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SCREEN: STATISTIK ================= -->
+  <section class="screen" id="screen-stats">
+    <div class="page">
+      <div class="page-head">
+        <h2>📊 Statistik</h2>
+        <p id="stats-player">Pemain</p>
+      </div>
+      <div class="card">
+        <h3>🏆 Peringkat Level</h3>
+        <div class="table-wrap">
+          <table class="tbl">
+            <thead><tr><th>Level</th><th>Topik</th><th>⭐ Terbaik</th><th>🎯 Benar</th><th>🔁 Dicoba</th><th>Terakhir</th></tr></thead>
+            <tbody id="stats-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h3>🏅 Lencana</h3>
+        <div class="badge-grid" id="badge-grid"></div>
+      </div>
+      <div class="card">
+        <h3>📈 Riwayat 20 Permainan Terakhir</h3>
+        <div class="table-wrap">
+          <table class="tbl">
+            <thead><tr><th>#</th><th>Level</th><th>Hasil</th><th>Benar</th><th>Waktu</th><th>Poin</th><th>Tanggal</th></tr></thead>
+            <tbody id="history-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="result-actions">
+        <button class="btn btn-primary" id="btn-stats-close">← Kembali</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SCREEN: BANTUAN ================= -->
+  <section class="screen" id="screen-help">
+    <div class="page narrow">
+      <div class="page-head"><h2>❓ Cara Bermain</h2><p>Semua aturan singkatnya ada di sini.</p></div>
+      <div class="card help-card">
+        <div class="help-item"><span class="help-ico">🧸</span><div><b>Dua jalur: TK &amp; SD</b><p>Ada <b>8 level TK</b> (usia 4–6 tahun, serba gambar) dan <b>20 level SD</b> (kelas 1–6). Pilih jalurnya di <b>🗺️ Peta Level</b>, atau tekan tombol <b>🧸 Mulai TK</b> / <b>▶️ Mulai Belajar</b> di beranda. Progres kedua jalur disimpan terpisah.</p></div></div>
+        <div class="help-item"><span class="help-ico">1️⃣</span><div><b>Pilih level</b><p>Setiap jalur punya kesulitan yang terus meningkat. Selesaikan satu level untuk membuka yang berikutnya.</p></div></div>
+        <div class="help-item"><span class="help-ico">2️⃣</span><div><b>Jawab soal</b><p>Setiap level berisi 10 soal acak, masing-masing dengan <b>4 pilihan jawaban</b>. Pilih satu jawaban yang benar.</p></div></div>
+        <div class="help-item"><span class="help-ico">3️⃣</span><div><b>Perhatikan waktu</b><p>Ada hitung mundur di setiap soal. Jawaban benar <b>sebelum waktu habis</b> dapat bonus poin lebih besar. Durasi (5–180 detik) atau <b>∞ Tanpa batas waktu</b> bisa diatur di menu ⚙️ Pengaturan. Tanpa batas cocok untuk anak TK yang baru belajar.</p></div></div>
+        <div class="help-item"><span class="help-ico">💛</span><div><b>Hati / nyawa</b><p>Kamu punya 3 hati. Jawaban salah mengurangi 1 hati. Jika hati habis, permainan selesai lebih cepat.</p></div></div>
+        <div class="help-item"><span class="help-ico">🔥</span><div><b>Beruntun (combo)</b><p>Jawaban benar beruntun menambah pengali skor: 1x → 2x → 3x → 4x.</p></div></div>
+        <div class="help-item"><span class="help-ico">⭐</span><div><b>Bintang</b><p>Setiap level punya maksimal 3 bintang. Makin banyak jawaban benar dan makin cepat, makin banyak bintang.</p></div></div>
+        <div class="help-item"><span class="help-ico">💡</span><div><b>Petunjuk</b><p>Butuh bantuan? Tombol 💡 Petunjuk mengurangi poin sedikit, tapi tetap bisa dipakai.</p></div></div>
+        <div class="help-item"><span class="help-ico">👥</span><div><b>Banyak pemain</b><p>Satu perangkat bisa dipakai beberapa anak. Tekan nama di kanan atas (atau 👥 Ganti Pemain) untuk berpindah. Tiap pemain punya <b>bintang, level, riwayat, dan lencana sendiri</b>, jadi tinggal lanjutkan dari tempat terakhir.</p></div></div>
+        <div class="help-item"><span class="help-ico">🏆</span><div><b>Papan Peringkat</b><p>Tab <b>📱 Perangkat Ini</b> menampilkan semua pemain di perangkat ini. Kalau game dijalankan lewat <code>server.js</code>, tab <b>🌐 Semua Pemain</b> menampilkan peringkat dari HP dan komputer lain di jaringan yang sama.</p></div></div>
+      </div>
+      <div class="result-actions">
+        <button class="btn btn-primary" id="btn-help-close">← Kembali</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ================= MODAL ================= -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-emoji" id="modal-emoji">🎮</div>
+    <h3 id="modal-title">Judul</h3>
+    <p id="modal-text">Teks</p>
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Loader -->
+<div class="loader" id="loader">
+  <div class="loader-mascot" id="loader-mascot"></div>
+  <p id="loader-text">Menyiapkan database…</p>
+</div>
+
+<!-- ================= PUSTAKA ================= -->
+<script src="assets/vendor/sql-wasm-binary.js"></script>
+<script src="assets/vendor/sql-wasm.js"></script>
+
+<!-- ================= SKRIP GAME ================= -->
+<script src="assets/js/config.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/art.js"></script>
+<script src="assets/js/audio.js"></script>
+<script src="assets/js/topics.js"></script>
+<script src="assets/js/db.js"></script>
+<script src="assets/js/game.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
